@@ -20,11 +20,11 @@ def createVHDLtemplate(filename):
 
         for port in ports:
             my_file.write("\t\t"+port["name"]+" : ")
-            if port["dir"] == "input":
+            if "input" in port["dir"]:
                 my_file.write( "IN " )
-            elif port["dir"] == "output":
-                my_file.write( "IN " )
-            elif port["dir"] == "inout":
+            elif "output" in port["dir"]:
+                my_file.write( "OUT " )
+            elif "inout" in port["dir"]:
                 my_file.write( "INOUT " )
             else:
                 print(port["dir"])
@@ -45,6 +45,21 @@ def createVHDLtemplate(filename):
         my_file.write("\t);\n")
         my_file.write("END COMPONENT; -- " + module_name + "\n")
 
+        my_file.write("\n\n-- SIGNAL templates \n");
+
+        for port in ports:
+            my_file.write("SIGNAL "+port["name"]+" : ")
+            if  not port["width"]:
+                my_file.write(" STD_LOGIC ");
+                my_file.write(":= '0'");
+            else:
+                width = port["width"].replace("[","(")
+                width = width.replace("]",")")
+                width = width.replace(":"," downto ")
+                my_file.write(" STD_LOGIC_VECTOR " + width)
+                my_file.write(":= (others => '0')");
+
+            my_file.write(";\n")
 
 def parseVerilogFile(filename):
 
@@ -103,4 +118,8 @@ def parseVerilogFile(filename):
 if __name__ == "__main__":
     filename = "../../modules/Ethernet/build/gateware/liteeth_core.v"
     parseVerilogFile(filename)
+
+    for port in ports:
+        print(port)
+
     createVHDLtemplate(filename.replace(".v", ".vhdl"))
