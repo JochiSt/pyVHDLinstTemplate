@@ -151,6 +151,17 @@ def parseVerilogFile(filename):
 
                 ports.append(port)
 
+def printPorts():
+    print("found ports:")
+    print('------------')
+    for port in ports:
+        #print(port)
+        print('\t{:25}  {:8}  {:>5} '.format(port['name'], port['dir'], port['type']), end='')
+
+        if port['width']:
+            print('{:>8}'.format(port['width']))
+        else:
+            print()
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -162,15 +173,6 @@ if __name__ == "__main__":
 
         parseVerilogFile(filename)
 
-        print("found ports:")
-        print('------------')
-        for port in ports:
-            #print(port)
-            print('\t{:25}  {:8}  {:>5} '.format(port['name'], port['dir'], port['type']), end='')
-
-            if port['width']:
-                print('{:>8}'.format(port['width']))
-            else:
-                print()
+        printPorts()
 
         createVHDLtemplate(filename.replace(".v", ".vhdl"))
