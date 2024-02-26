@@ -138,7 +138,7 @@ def parseVerilogFile(filename):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 0:
+    if len(sys.argv) > 1:
         filename = str(sys.argv[1])
 
         print("#"*80)
