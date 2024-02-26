@@ -7,20 +7,19 @@ ports = []
 def createVHDLtemplate(filename):
     global module_name
     global ports
+    # port["name"] = name
+    # port["dir"] = direction
+    # port["type"] = type
+    # port["width"] = width
+
+    max_name_length = 0
+    for port in ports:
+        max_name_length = max( max_name_length, len(port["name"]))
 
     with open(filename, "w") as my_file:
 
         my_file.write("COMPONENT " + module_name + " IS\n")
         my_file.write("\tPORT (\n")
-
-        # port["name"] = name
-        # port["dir"] = direction
-        # port["type"] = type
-        # port["width"] = width
-
-        max_name_length = 0
-        for port in ports:
-            max_name_length = max( max_name_length, len(port["name"]))
 
         for port in ports:
             my_file.write(("\t\t{:%d} : "%(max_name_length+1)).format(port["name"]))
@@ -64,6 +63,9 @@ def createVHDLtemplate(filename):
                 my_file.write(" := (others => '0')");
 
             my_file.write(";\n")
+
+        my_file.write("\n\n-- Instantiation template \n");
+
 
 def parseVerilogFile(filename):
     """extract the ports and their properties from the given Verilog file
