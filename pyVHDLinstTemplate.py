@@ -18,14 +18,18 @@ def createVHDLtemplate(filename):
         # port["type"] = type
         # port["width"] = width
 
+        max_name_length = 0
         for port in ports:
-            my_file.write("\t\t"+port["name"]+" : ")
+            max_name_length = max( max_name_length, len(port["name"]))
+
+        for port in ports:
+            my_file.write(("\t\t{:%d} : "%(max_name_length+1)).format(port["name"]))
             if "input" in port["dir"]:
-                my_file.write( "IN " )
+                my_file.write( "{:6}".format("IN") )
             elif "output" in port["dir"]:
-                my_file.write( "OUT " )
+                my_file.write( "{:6}".format("OUT") )
             elif "inout" in port["dir"]:
-                my_file.write( "INOUT " )
+                my_file.write( "{:6}".format("INOUT") )
             else:
                 print(port["dir"])
 
@@ -48,21 +52,25 @@ def createVHDLtemplate(filename):
         my_file.write("\n\n-- SIGNAL templates \n");
 
         for port in ports:
-            my_file.write("SIGNAL "+port["name"]+" : ")
+            my_file.write( ("SIGNAL {:%d} : "%(max_name_length+1)).format(port["name"]))
             if  not port["width"]:
-                my_file.write(" STD_LOGIC ");
-                my_file.write(":= '0'");
+                my_file.write("{:29}".format("STD_LOGIC"));
+                my_file.write(" := '0'");
             else:
                 width = port["width"].replace("[","(")
                 width = width.replace("]",")")
                 width = width.replace(":"," downto ")
-                my_file.write(" STD_LOGIC_VECTOR " + width)
-                my_file.write(":= (others => '0')");
+                my_file.write("{:16}".format("STD_LOGIC_VECTOR") + width)
+                my_file.write(" := (others => '0')");
 
             my_file.write(";\n")
 
 def parseVerilogFile(filename):
+    """extract the ports and their properties from the given Verilog file
 
+    Args:
+        filename (str): filename of the verilog file to be parsed
+    """
     global module_name
     global ports
 
