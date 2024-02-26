@@ -1,4 +1,4 @@
-
+import sys
 import re
 
 module_name = ""
@@ -116,10 +116,24 @@ def parseVerilogFile(filename):
 
 
 if __name__ == "__main__":
-    filename = "../../modules/Ethernet/build/gateware/liteeth_core.v"
-    parseVerilogFile(filename)
+    if len(sys.argv) > 0:
+        filename = str(sys.argv[1])
 
-    for port in ports:
-        print(port)
+        print("#"*80)
+        print("Convert " + filename + " to VHDL")
+        print()
 
-    createVHDLtemplate(filename.replace(".v", ".vhdl"))
+        parseVerilogFile(filename)
+
+        print("found ports:")
+        print('------------')
+        for port in ports:
+            #print(port)
+            print('\t{:25}  {:8}  {:>5} '.format(port['name'], port['dir'], port['type']), end='')
+
+            if port['width']:
+                print('{:>8}'.format(port['width']))
+            else:
+                print()
+
+        createVHDLtemplate(filename.replace(".v", ".vhdl"))
