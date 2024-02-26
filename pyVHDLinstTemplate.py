@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 import re
 
 module_name = ""
@@ -17,6 +18,12 @@ def createVHDLtemplate(filename):
         max_name_length = max( max_name_length, len(port["name"]))
 
     with open(filename, "w") as my_file:
+        my_file.write("-"*80+"\n")
+        my_file.write("-- automatic generated file\n")
+        now = datetime.now() # current date and time
+        date_time = now.strftime("%d.%m.%Y %H:%M:%S")
+        my_file.write("-- generated on " + str(date_time) + "\n")
+        my_file.write("-"*80+"\n\n\n")
 
         my_file.write("COMPONENT " + module_name + " IS\n")
         my_file.write("\tPORT (\n")
@@ -48,7 +55,11 @@ def createVHDLtemplate(filename):
         my_file.write("\t);\n")
         my_file.write("END COMPONENT; -- " + module_name + "\n")
 
-        my_file.write("\n\n-- SIGNAL templates \n");
+        my_file.write("\n\n\n")
+
+        my_file.write("-"*80+"\n")
+        my_file.write("-- SIGNAL templates \n");
+        my_file.write("-"*80+"\n")
 
         for port in ports:
             my_file.write( ("SIGNAL {:%d} : "%(max_name_length+1)).format(port["name"]))
@@ -64,7 +75,11 @@ def createVHDLtemplate(filename):
 
             my_file.write(";\n")
 
-        my_file.write("\n\n-- Instantiation template \n");
+        my_file.write("\n\n\n")
+        my_file.write("-"*80+"\n")
+        my_file.write("-- Instantiation template \n");
+        my_file.write("-"*80+"\n")
+
         my_file.write(module_name + "_0 : " + module_name + "\n")
         my_file.write("\tPORT MAP (\n")
 
