@@ -65,7 +65,19 @@ def createVHDLtemplate(filename):
             my_file.write(";\n")
 
         my_file.write("\n\n-- Instantiation template \n");
+        my_file.write(module_name + "_0 : " + module_name + "\n")
+        my_file.write("\tPORT MAP (\n")
 
+        for port in ports:
+            my_file.write(("\t\t{:%d}"%(max_name_length+1)).format(port["name"]))
+            my_file.write(("=> {:}").format(port["name"]))
+
+            if port["name"] == ports[-1]["name"]:   # last port does not get a ;
+                my_file.write("\n")
+            else:
+                my_file.write(",\n")
+
+        my_file.write("\t);\n")
 
 def parseVerilogFile(filename):
     """extract the ports and their properties from the given Verilog file
